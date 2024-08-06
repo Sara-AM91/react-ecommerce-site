@@ -1,12 +1,7 @@
-// src/pages/CartPage.jsx
-import { useCart } from "../utils/cartUtils";
+import { useCart } from "../context/CartContext";
 
-//manage the cart's state and actions.
 const CartPage = () => {
-  //useCart function return { cart, addToCart, removeFromCart };
-  //Can I change name of them? For ex. cart, addedToCart, removedFromCart
   const { cart, addToCart, removeFromCart } = useCart();
-
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   return (

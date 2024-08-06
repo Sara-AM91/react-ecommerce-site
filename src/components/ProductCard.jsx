@@ -1,7 +1,5 @@
-// src/components/ProductCard.jsx
-
 import { Link } from "react-router-dom";
-import { useCart } from "../utils/cartUtils";
+import { useCart } from "../context/CartContext";
 
 const ProductCard = ({ product }) => {
   const { cart, addToCart, removeFromCart } = useCart();
