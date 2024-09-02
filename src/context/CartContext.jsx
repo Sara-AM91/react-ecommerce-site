@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 
 //Create a Context for the cart
 const CartContext = createContext();
+console.log("CartContext", CartContext.Provider, CartContext.Consumer);
 
 //Create a provider component
 export const CartProvider = ({ children }) => {
@@ -10,6 +11,8 @@ export const CartProvider = ({ children }) => {
     const savedCart = localStorage.getItem("cart");
     return savedCart ? JSON.parse(savedCart) : [];
   });
+
+  console.log("CartProvider", CartProvider);
 
   useEffect(() => {
     //Update local storage whenever the cart changes

@@ -3,6 +3,7 @@ import { useCart } from "../context/CartContext";
 
 const Navbar = () => {
   const { cart } = useCart();
+  console.log("useCart() has value:", useCart());
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
