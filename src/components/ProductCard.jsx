@@ -1,9 +1,10 @@
+//03.09:
 import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 
 const ProductCard = ({ product }) => {
   const { cart, addToCart, removeFromCart } = useCart();
-  const productInCart = cart.find((item) => item.id === product.id);
+  const productInCart = cart.find((item) => item._id === product._id);
   const quantity = productInCart ? productInCart.quantity : 0;
 
   return (
@@ -11,15 +12,15 @@ const ProductCard = ({ product }) => {
       <figure>
         <img
           src={product.image}
-          alt={product.title}
+          alt={product.name}
           className="w-full h-48 object-cover"
         />
       </figure>
       <div className="card-body">
-        <h2 className="card-title">{product.title}</h2>
-        <p className="text-lg font-bold">${product.price}</p>
+        <h2 className="card-title">{product.name}</h2>{" "}
+        <p className="text-lg font-bold">${product.price}</p>{" "}
         <div className="card-actions justify-end">
-          <Link to={`/category/${product.category}`} className="btn btn-link">
+          <Link to={`/category/${product.categoryId}`} className="btn btn-link">
             View Category
           </Link>
           {quantity > 0 ? (

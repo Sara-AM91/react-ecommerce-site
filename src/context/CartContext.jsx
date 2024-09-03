@@ -2,7 +2,6 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 
 //Create a Context for the cart
 const CartContext = createContext();
-console.log("CartContext", CartContext.Provider, CartContext.Consumer);
 
 //Create a provider component
 export const CartProvider = ({ children }) => {
@@ -12,8 +11,6 @@ export const CartProvider = ({ children }) => {
     return savedCart ? JSON.parse(savedCart) : [];
   });
 
-  console.log("CartProvider", CartProvider);
-
   useEffect(() => {
     //Update local storage whenever the cart changes
     localStorage.setItem("cart", JSON.stringify(cart));
@@ -22,10 +19,10 @@ export const CartProvider = ({ children }) => {
   //Function to add a product to the cart
   const addToCart = (product, quantity = 1) => {
     setCart((prevCart) => {
-      const itemInCart = prevCart.find((item) => item.id === product.id);
+      const itemInCart = prevCart.find((item) => item._id === product._id);
       if (itemInCart) {
         return prevCart.map((item) =>
-          item.id === product.id
+          item._id === product._id
             ? { ...item, quantity: item.quantity + quantity }
             : item
         );
@@ -38,15 +35,18 @@ export const CartProvider = ({ children }) => {
   //Function to remove a product from the cart
   const removeFromCart = (product) => {
     setCart((prevCart) => {
-      const itemInCart = prevCart.find((item) => item.id === product.id);
-      if (itemInCart.quantity === 1) {
-        return prevCart.filter((item) => item.id !== product.id);
-      } else {
+      const itemInCart = prevCart.find((item) => item._id === product._id);
+      if (itemInCart && itemInCart.quantity === 1) {
+        return prevCart.filter((item) => item._id !== product._id);
+      } else if (itemInCart) {
         return prevCart.map((item) =>
-          item.id === product.id
+          item._id === product._id
             ? { ...item, quantity: item.quantity - 1 }
             : item
         );
+      } else {
+        //Item was not found, return previous cart unchanged
+        return prevCart;
       }
     });
   };
