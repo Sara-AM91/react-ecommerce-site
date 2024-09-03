@@ -13,20 +13,24 @@ const HomePage = () => {
     const loadData = async () => {
       try {
         const categoriesData = await fetchCategories();
+        console.log("categoriesData", categoriesData);
+
+        // Adjust filtering to use category.name
         const filteredCategories = categoriesData.filter((category) =>
           [
             "electronics",
             "jewelery",
             "men's clothing",
             "women's clothing",
-          ].includes(category)
+          ].includes(category.name)
         );
         setCategories(filteredCategories);
 
-        const productsData = await fetchProducts();
+        const productsData = await fetchProducts(); // Fetch all products or adjust as needed
         console.log("productsData", productsData);
         setProducts(productsData);
       } catch (err) {
+        console.error("Error loading data:", err);
         setError("Failed to load data");
       } finally {
         setLoading(false);
@@ -45,18 +49,18 @@ const HomePage = () => {
       <div className="flex flex-wrap mb-8">
         {categories.map((category) => (
           <Link
-            to={`/category/${category}`}
-            key={category}
+            to={`/category/${category._id}`} // Use the category ID in the link
+            key={category._id}
             className="btn btn-outline m-2"
           >
-            {category}
+            {category.name}
           </Link>
         ))}
       </div>
       <h1 className="text-3xl font-bold mb-4">All Products</h1>
       <div className="flex flex-wrap">
         {products.map((product) => (
-          <ProductCard key={product.id} product={product} />
+          <ProductCard key={product._id} product={product} />
         ))}
       </div>
     </div>

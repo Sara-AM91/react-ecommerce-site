@@ -1,17 +1,61 @@
 //src/utils/api.js
-export const fetchCategories = async () => {
-  const response = await fetch("https://fakestoreapi.com/products/categories");
-  return response.json();
-};
+// export const fetchCategories = async () => {
+//   const response = await fetch("https://fakestoreapi.com/products/categories");
+//   return response.json();
+// };
+
+// export const fetchProducts = async () => {
+//   const response = await fetch("https://fakestoreapi.com/products");
+//   return response.json();
+// };
+
+// export const fetchProductsByCategory = async (category) => {
+//   const response = await fetch(
+//     `https://fakestoreapi.com/products/category/${category}`
+//   );
+//   return response.json();
+// };
+
+//03.09.2024:
+const API_BASE_URL = "http://localhost:5000/api"; // Update this with your actual backend URL and port
 
 export const fetchProducts = async () => {
-  const response = await fetch("https://fakestoreapi.com/products");
-  return response.json();
+  try {
+    const response = await fetch(`${API_BASE_URL}/products`);
+    if (!response.ok) {
+      throw new Error("Failed to fetch products");
+    }
+    return response.json();
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    throw error;
+  }
 };
 
-export const fetchProductsByCategory = async (category) => {
-  const response = await fetch(
-    `https://fakestoreapi.com/products/category/${category}`
-  );
-  return response.json();
+export const fetchCategories = async () => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/categories`);
+    if (!response.ok) {
+      throw new Error("Failed to fetch categories");
+    }
+    return response.json();
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    throw error;
+  }
+};
+
+export const fetchProductsByCategory = async (categoryId) => {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/products?categoryId=${categoryId}`
+    );
+    if (!response.ok) {
+      throw new Error("Failed to fetch products by category");
+    }
+    return response.json();
+  } catch (error) {
+    console.error("Error fetching products by category:", error);
+    throw error;
+  }
 };
