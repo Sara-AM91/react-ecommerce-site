@@ -5,7 +5,7 @@ import { fetchProductsByCategory } from "../utils/api";
 import ProductCard from "../components/ProductCard";
 
 const CategoryPage = () => {
-  const { category } = useParams(); // This is now the category ID, not name
+  const { category } = useParams();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -13,7 +13,7 @@ const CategoryPage = () => {
   useEffect(() => {
     const loadProducts = async () => {
       try {
-        const data = await fetchProductsByCategory(category); // This is using the ID now
+        const data = await fetchProductsByCategory(category);
         setProducts(data);
       } catch (err) {
         console.error("Error loading products:", err);

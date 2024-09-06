@@ -17,7 +17,26 @@
 // };
 
 //03.09.2024:
-const API_BASE_URL = "http://localhost:5000/api"; // Update this with your actual backend URL and port
+const API_BASE_URL = "http://localhost:5000/api";
+
+export const addCategory = async (category) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/categories`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(category),
+    });
+    if (!response.ok) {
+      throw new Error("Failed to add category");
+    }
+    return response.json();
+  } catch (error) {
+    console.error("Error adding category:", error);
+    throw error;
+  }
+};
 
 export const fetchProducts = async () => {
   try {
