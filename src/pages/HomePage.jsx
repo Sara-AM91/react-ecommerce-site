@@ -17,15 +17,15 @@ const HomePage = () => {
         console.log("categoriesData", categoriesData);
 
         //Adjust filtering to use category.name
-        const filteredCategories = categoriesData.filter((category) =>
-          [
-            "electronics",
-            "jewelery",
-            "men's clothing",
-            "women's clothing",
-          ].includes(category.name)
-        );
-        setCategories(filteredCategories);
+        // const filteredCategories = categoriesData.filter((category) =>
+        //   [
+        //     "electronics",
+        //     "jewelery",
+        //     "men's clothing",
+        //     "women's clothing",
+        //   ].includes(category.name)
+        // );
+        setCategories(categoriesData);
 
         const productsData = await fetchProducts();
         console.log("productsData", productsData);
