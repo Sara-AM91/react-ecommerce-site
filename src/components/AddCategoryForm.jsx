@@ -2,22 +2,33 @@ import { useState } from "react";
 import { addCategory } from "../utils/api";
 import { Form } from "react-router-dom";
 
-const AddCategoryForm = () => {
+const AddCategoryForm = ({ setCategories }) => {
   const [name, setName] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await addCategory({ name });
-      alert("Category added successfully");
-      //Clear the input field:
-      setName("");
+      const newCategory = await addCategory({ name });
+      console.log("New Category Response:", newCategory); // Log the response
+
+      if (newCategory && newCategory._id) {
+        //Update the categories list in the HomePage component:
+        setCategories((prevCategories) => [...prevCategories, newCategory]);
+        alert("Category added successfully");
+
+        //Clear the input field:
+        setName("");
+      } else {
+        throw new Error("Invalid response from server");
+      }
     } catch (error) {
+      console.error("Error adding category:", error);
       alert("Failed to add category");
     }
   };
+
   return (
-    <form onSubmit={handleSubmit()} className="mb-4">
+    <form onSubmit={handleSubmit} className="mb-4">
       <input
         type="text"
         value={name}
