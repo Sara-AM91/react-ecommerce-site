@@ -1,79 +1,170 @@
 import { useState, useEffect } from "react";
-import { addProduct, fetchCategories } from "../utils/api";
+import { fetchCategories, addProduct } from "../utils/api";
+import axios from "axios";
 
 const AddProductForm = () => {
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [price, setPrice] = useState("");
-  const [categoryId, setCategoryId] = useState("");
+  const [product, setProduct] = useState({
+    name: "",
+    description: "",
+    price: "",
+    categoryId: "",
+    image: null,
+  });
+
   const [categories, setCategories] = useState([]);
+  const [imagePreview, setImagePreview] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const loadCategories = async () => {
-      const categoriesData = await fetchCategories();
-      setCategories(categoriesData);
+      try {
+        const categoriesData = await fetchCategories();
+        setCategories(categoriesData);
+      } catch (err) {
+        setError("Failed to load categories");
+      }
     };
-
     loadCategories();
   }, []);
 
+  const handleChange = (e) => {
+    setProduct({ ...product, [e.target.name]: e.target.value });
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    setProduct({ ...product, image: file });
+    setImagePreview(URL.createObjectURL(file));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+
+    console.log("Submitting Product:", product); // Log to check the product data
     try {
-      await addProduct({ name, description, price, categoryId });
+      // Upload the image to Cloudinary
+      const formData = new FormData();
+      formData.append("file", product.image);
+      formData.append("upload_preset", "product_uploads");
+
+      const cloudinaryResponse = await axios.post(
+        `https://api.cloudinary.com/v1_1/dthjn2xqz/image/upload`,
+        formData
+      );
+
+      const imageUrl = cloudinaryResponse.data.secure_url;
+
+      // Submit the product data to your backend API
+      const newProduct = {
+        name: product.name,
+        description: product.description,
+        price: product.price,
+        categoryId: product.categoryId,
+        image: imageUrl, // Use the uploaded image URL from Cloudinary
+      };
+
+      await addProduct(newProduct);
       alert("Product added successfully");
-      setName("");
-      setDescription("");
-      setPrice("");
-      setCategoryId("");
+      setProduct({
+        name: "",
+        description: "",
+        price: "",
+        categoryId: "",
+        image: null,
+      });
+      setImagePreview("");
     } catch (error) {
-      alert("Failed to add product");
+      setError("Failed to add product");
+      console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mb-4">
-      <input
-        type="text"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        placeholder="Product Name"
-        className="input input-bordered mb-2"
-        required
-      />
-      <textarea
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-        placeholder="Product Description"
-        className="textarea textarea-bordered mb-2"
-        required
-      ></textarea>
-      <input
-        type="number"
-        value={price}
-        onChange={(e) => setPrice(e.target.value)}
-        placeholder="Product Price"
-        className="input input-bordered mb-2"
-        required
-      />
-      <select
-        value={categoryId}
-        onChange={(e) => setCategoryId(e.target.value)}
-        className="select select-bordered mb-2"
-        required
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div>
+        <label className="block text-sm font-medium">Product Name</label>
+        <input
+          type="text"
+          name="name"
+          value={product.name}
+          onChange={handleChange}
+          className="input input-bordered w-full"
+          required
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium">Description</label>
+        <textarea
+          name="description"
+          value={product.description}
+          onChange={handleChange}
+          className="textarea textarea-bordered w-full"
+          required
+        ></textarea>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium">Price</label>
+        <input
+          type="number"
+          name="price"
+          value={product.price}
+          onChange={handleChange}
+          className="input input-bordered w-full"
+          required
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium">Category</label>
+        <select
+          name="categoryId"
+          value={product.categoryId}
+          onChange={handleChange}
+          className="select select-bordered w-full"
+          required
+        >
+          <option value="">Select a Category</option>
+          {categories.map((category) => (
+            <option key={category._id} value={category._id}>
+              {category.name}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium">Upload Image</label>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleImageChange}
+          className="file-input w-full"
+          required
+        />
+        {imagePreview && (
+          <img
+            src={imagePreview}
+            alt="Preview"
+            className="mt-2 h-40 w-40 object-cover"
+          />
+        )}
+      </div>
+
+      <button
+        type="submit"
+        className="btn btn-primary w-full"
+        disabled={loading}
       >
-        <option value="" disabled>
-          Select Category
-        </option>
-        {categories.map((category) => (
-          <option key={category._id} value={category._id}>
-            {category.name}
-          </option>
-        ))}
-      </select>
-      <button type="submit" className="btn btn-primary">
-        Add Product
+        {loading ? "Adding Product..." : "Add Product"}
       </button>
+
+      {error && <p className="text-red-500">{error}</p>}
     </form>
   );
 };

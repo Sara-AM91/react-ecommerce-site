@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { fetchCategories, fetchProducts, deleteCategory } from "../utils/api";
 import ProductCard from "../components/ProductCard";
 import AddCategoryForm from "../components/AddCategoryForm";
-
+import AddProductForm from "../components/AddProductForm";
 const HomePage = () => {
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
@@ -63,7 +63,6 @@ const HomePage = () => {
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-3xl font-bold mb-4">Categories</h1>
-
       <div className="flex flex-wrap mb-8">
         {categories.map((category) => (
           <div key={category._id} className="flex items-center m-2 relative">
@@ -91,6 +90,15 @@ const HomePage = () => {
         {products.map((product) => (
           <ProductCard key={product._id} product={product} />
         ))}
+      </div>
+      {/* <AddProductForm /> Add Product Form */}
+      <div className="flex justify-end">
+        <Link
+          to="/add-product"
+          className="text-blue-900 font-medium hover:underline"
+        >
+          Add New Product
+        </Link>
       </div>
     </div>
   );

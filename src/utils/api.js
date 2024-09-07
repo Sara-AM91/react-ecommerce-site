@@ -49,7 +49,24 @@ export const deleteCategory = async (categoryId) => {
     throw new Error("Failed to delete category");
   } catch (error) {}
 };
-
+export const addProduct = async (product) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/add-product`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(product),
+    });
+    if (!response.ok) {
+      throw new Error("Failed to add product");
+    }
+    return response.json();
+  } catch (error) {
+    console.error("Error adding product:", error);
+    throw error;
+  }
+};
 export const fetchProducts = async () => {
   try {
     const response = await fetch(`${API_BASE_URL}/products`);
