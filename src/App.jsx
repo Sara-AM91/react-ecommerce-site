@@ -4,6 +4,7 @@ import HomePage from "./pages/HomePage";
 import CategoryPage from "./pages/CategoryPage";
 import CartPage from "./pages/CartPage";
 import { CartProvider } from "./context/CartContext";
+import AddProductPage from "./pages/AddProductPage";
 
 const App = () => {
   return (
@@ -14,6 +15,7 @@ const App = () => {
           <Route path="/" element={<HomePage />} />
           <Route path="/category/:category" element={<CategoryPage />} />
           <Route path="/cart" element={<CartPage />} />
+          <Route path="/add-product" element={<AddProductPage />} />
         </Routes>
       </Router>
     </CartProvider>
